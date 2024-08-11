@@ -1,3 +1,5 @@
+import pytest
+
 from main import BooksCollector
 
 # класс TestBooksCollector объединяет набор тестов, которыми мы покрываем наше приложение BooksCollector
@@ -22,3 +24,13 @@ class TestBooksCollector:
 
     # напиши свои тесты ниже
     # чтобы тесты были независимыми в каждом из них создавай отдельный экземпляр класса BooksCollector()
+
+    @pytest.mark.parametrize('param_name, param_value', [
+        ('books_genre',{}),
+        ('favorites',[]),
+        ('genre',['Фантастика', 'Ужасы', 'Детективы', 'Мультфильмы', 'Комедии']),
+        ('genre_age_rating', ['Ужасы', 'Детективы'])
+    ])
+    def test_class_init_data_correctly(self, param_name, param_value):
+        collector = BooksCollector()
+        assert getattr(collector, param_name) == param_value
