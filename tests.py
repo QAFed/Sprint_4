@@ -40,7 +40,7 @@ class TestBooksCollector:
         "41сорокОдин41сорокОдин41сорокОдин41сорONE",
         "50пятьДесятFIFTEEN5050пятьДесятFIFTEEN501111111111"
     ])
-    def test_add_new_book_with_len_name_out_of_range_not_added(self, name):
+    def test_add_new_book_if_len_name_out_of_range_not_added(self, name):
         collector = BooksCollector()
         collector.add_new_book(name)
         assert name not in collector.get_books_genre()
@@ -50,16 +50,45 @@ class TestBooksCollector:
         "40Cорок40!40Sorok40!40сорок40!40сорок40!",
         "20dvadcatД20dvadcatД"
     ])
-    def test_add_new_book_with_len_name_in_range_added(self, name):
+    def test_add_new_book_if_len_name_in_range_added(self, name):
         collector = BooksCollector()
         collector.add_new_book(name)
         assert name in collector.get_books_genre()
 
-    def test_add_new_book_then_book_already_exist_not_create(self):
+    def test_add_new_book_if_book_already_exist_not_rewrite_value(self):
         collector = BooksCollector()
-        duble_book = "Duble_book"
+        duble_book = "Duble book"
         genre_book = 'Мультфильмы'
         collector.add_new_book(duble_book)
         collector.set_book_genre(duble_book, genre_book)
         collector.add_new_book(duble_book)
         assert collector.get_books_genre()[duble_book] == genre_book
+
+    def test_set_book_genre_if_genre_and_name_is_exist(self):
+        collector = BooksCollector()
+        new_book = "New book"
+        genre_book = 'Мультфильмы'
+        collector.add_new_book(new_book)
+        collector.set_book_genre(new_book, genre_book)
+        assert collector.get_books_genre()[new_book] == genre_book
+
+    def test_set_book_genre_if_genre_not_exist(self):
+        collector = BooksCollector()
+        new_book = 'Лунтик'
+        collector.add_new_book(new_book)
+        collector.set_book_genre(new_book,'Хоррор')
+        assert collector.get_books_genre()[new_book] == ''
+
+    def test_set_book_genre_if_name_not_exist(self):
+        collector = BooksCollector()
+        new_book = "New book"
+        collector.set_book_genre(new_book, 'Мультфильмы')
+        assert collector.get_books_genre().get(new_book) == None
+
+    def test_get_book_genre_by_name(self):
+        collector = BooksCollector()
+        new_book = "New book"
+        genre = 'Мультфильмы'
+        collector.add_new_book(new_book)
+        collector.set_book_genre(new_book, genre)
+        assert collector.get_book_genre(new_book) == genre
