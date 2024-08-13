@@ -92,3 +92,39 @@ class TestBooksCollector:
         collector.add_new_book(new_book)
         collector.set_book_genre(new_book, genre)
         assert collector.get_book_genre(new_book) == genre
+
+    def test_get_books_with_specific_genre_if_such_books_exist(self):
+        test_data = {
+            'Доллар по 30': 'Фантастика',
+            'Синий трактор': 'Ужасы',
+            'Кто правит исходники на GIT':'Детективы',
+            'Дороги без ям': 'Фантастика'
+        }
+        collector = BooksCollector()
+        for name, genre in  test_data.items():
+            collector.add_new_book(name)
+            collector.set_book_genre(name, genre)
+
+        assert collector.get_books_with_specific_genre('Фантастика') == ['Доллар по 30', 'Дороги без ям']
+
+    def test_get_books_with_specific_genre_if_such_books_absent(self):
+        test_data = {
+            'Доллар по 30': 'Фантастика',
+            'Синий трактор': 'Ужасы',
+            'Кто правит исходники на GIT': 'Детективы',
+            'Дороги без ям': 'Фантастика'
+        }
+        collector = BooksCollector()
+        for name, genre in test_data.items():
+            collector.add_new_book(name)
+            collector.set_book_genre(name, genre)
+
+        assert collector.get_books_with_specific_genre('Мультфильмы') == []
+
+    def test_get_books_with_specific_genre_if_book_list_empty(self):
+        collector = BooksCollector()
+        assert collector.get_books_with_specific_genre('Фантастика') == []
+
+    def test_get_books_with_specific_genre_if_genre_not_in_list(self):
+        collector = BooksCollector()
+        assert collector.get_books_with_specific_genre('Хоррор') == []
