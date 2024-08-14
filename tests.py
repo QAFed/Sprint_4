@@ -1,5 +1,5 @@
 import pytest
-
+from data import test_data
 from main import BooksCollector
 
 # класс TestBooksCollector объединяет набор тестов, которыми мы покрываем наше приложение BooksCollector
@@ -93,32 +93,13 @@ class TestBooksCollector:
         collector.set_book_genre(new_book, genre)
         assert collector.get_book_genre(new_book) == genre
 
-    def test_get_books_with_specific_genre_if_such_books_exist(self):
-        test_data = {
-            'Доллар по 30': 'Фантастика',
-            'Синий трактор': 'Ужасы',
-            'Кто правит исходники на GIT':'Детективы',
-            'Дороги без ям': 'Фантастика'
-        }
-        collector = BooksCollector()
-        for name, genre in  test_data.items():
-            collector.add_new_book(name)
-            collector.set_book_genre(name, genre)
 
+    def test_get_books_with_specific_genre_if_such_books_exist(self, load_test_data):
+        collector = load_test_data
         assert collector.get_books_with_specific_genre('Фантастика') == ['Доллар по 30', 'Дороги без ям']
 
-    def test_get_books_with_specific_genre_if_such_books_absent(self):
-        test_data = {
-            'Доллар по 30': 'Фантастика',
-            'Синий трактор': 'Ужасы',
-            'Кто правит исходники на GIT': 'Детективы',
-            'Дороги без ям': 'Фантастика'
-        }
-        collector = BooksCollector()
-        for name, genre in test_data.items():
-            collector.add_new_book(name)
-            collector.set_book_genre(name, genre)
-
+    def test_get_books_with_specific_genre_if_such_books_absent(self, load_test_data):
+        collector = load_test_data
         assert collector.get_books_with_specific_genre('Мультфильмы') == []
 
     def test_get_books_with_specific_genre_if_book_list_empty(self):
@@ -129,90 +110,36 @@ class TestBooksCollector:
         collector = BooksCollector()
         assert collector.get_books_with_specific_genre('Хоррор') == []
 
-    def test_get_books_genre(self):
-        test_data = {
-            'Доллар по 30': 'Фантастика',
-            'Синий трактор': 'Ужасы',
-            'Кто правит исходники на GIT': 'Детективы',
-            'Дороги без ям': 'Фантастика'
-        }
-        collector = BooksCollector()
-        for name, genre in test_data.items():
-            collector.add_new_book(name)
-            collector.set_book_genre(name, genre)
+    def test_get_books_genre(self, load_test_data):
+        collector = load_test_data
         assert collector.get_books_genre() == test_data
 
-    def test_get_books_for_children(self):
-        test_data = {
-            'Доллар по 30': 'Фантастика',
-            'Синий трактор': 'Ужасы',
-            'Кто правит исходники на GIT': 'Детективы',
-            'Дороги без ям': 'Фантастика'
-        }
-        collector = BooksCollector()
-        for name, genre in test_data.items():
-            collector.add_new_book(name)
-            collector.set_book_genre(name, genre)
+    def test_get_books_for_children(self, load_test_data):
+        collector = load_test_data
         assert collector.get_books_for_children() == ['Доллар по 30','Дороги без ям']
 
-    def test_add_book_in_favorites_if_name_in_list_and_not_in_favorites(self):
-        test_data = {
-            'Доллар по 30': 'Фантастика',
-            'Синий трактор': 'Ужасы',
-            'Кто правит исходники на GIT': 'Детективы',
-            'Дороги без ям': 'Фантастика'
-        }
+    def test_add_book_in_favorites_if_name_in_list_and_not_in_favorites(self, load_test_data):
+        collector = load_test_data
         fav_book = 'Синий трактор'
-        collector = BooksCollector()
-        for name, genre in test_data.items():
-            collector.add_new_book(name)
-            collector.set_book_genre(name, genre)
         collector.add_book_in_favorites(fav_book)
         assert collector.get_list_of_favorites_books()[0] == fav_book
 
-    def test_add_book_in_favorites_if_name_not_in_list_and_not_in_favorites_not_added(self):
-        test_data = {
-            'Доллар по 30': 'Фантастика',
-            'Синий трактор': 'Ужасы',
-            'Кто правит исходники на GIT': 'Детективы',
-            'Дороги без ям': 'Фантастика'
-        }
+    def test_add_book_in_favorites_if_name_not_in_list_and_not_in_favorites_not_added(self, load_test_data):
+        collector = load_test_data
         fav_book = 'Залётная книга'
-        collector = BooksCollector()
-        for name, genre in test_data.items():
-            collector.add_new_book(name)
-            collector.set_book_genre(name, genre)
         collector.add_book_in_favorites(fav_book)
         assert collector.get_list_of_favorites_books() == []
 
-    def test_add_book_in_favorites_if_name_in_list_and_in_favorites_not_added(self):
-        test_data = {
-            'Доллар по 30': 'Фантастика',
-            'Синий трактор': 'Ужасы',
-            'Кто правит исходники на GIT': 'Детективы',
-            'Дороги без ям': 'Фантастика'
-        }
+    def test_add_book_in_favorites_if_name_in_list_and_in_favorites_not_added(self, load_test_data):
+        collector = load_test_data
         fav_book = 'Кто правит исходники на GIT'
-        collector = BooksCollector()
-        for name, genre in test_data.items():
-            collector.add_new_book(name)
-            collector.set_book_genre(name, genre)
         collector.add_book_in_favorites(fav_book)
         collector.add_book_in_favorites(fav_book)
         assert collector.get_list_of_favorites_books() == ['Кто правит исходники на GIT']
 
-    def test_delete_book_from_favorites(self):
-        test_data = {
-            'Доллар по 30': 'Фантастика',
-            'Синий трактор': 'Ужасы',
-            'Кто правит исходники на GIT': 'Детективы',
-            'Дороги без ям': 'Фантастика'
-        }
+    def test_delete_book_from_favorites(self, load_test_data):
+        collector = load_test_data
         fav_book = 'Кто правит исходники на GIT'
-        collector = BooksCollector()
-        for name, genre in test_data.items():
-            collector.add_new_book(name)
-            collector.set_book_genre(name, genre)
         collector.add_book_in_favorites(fav_book)
         collector.delete_book_from_favorites(fav_book)
         assert fav_book not in collector.get_list_of_favorites_books()
